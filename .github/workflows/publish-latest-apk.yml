@@ -1,0 +1,38 @@
+name: Publish latest.apk to GitHub Pages
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get release APK
+        id: apk
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const rel = context.payload.release;
+            const apk = rel.assets.find(a => a.name === "DIUTransportSchedule.apk");
+            if (!apk) core.setFailed("DIUTransportSchedule.apk not found!");
+            core.setOutput("url", apk.browser_download_url);
+
+      - name: Download APK
+        run: |
+          mkdir -p site
+          curl -L "${{ steps.apk.outputs.url }}" -o site/latest.apk
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Deploy
+        uses: actions/deploy-pages@v4
