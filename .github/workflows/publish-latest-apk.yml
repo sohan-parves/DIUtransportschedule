@@ -14,25 +14,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get release APK
-        id: apk
+      - name: Find DIUTransportSchedule.apk from release assets
+        id: find_apk
         uses: actions/github-script@v7
         with:
           script: |
             const rel = context.payload.release;
             const apk = rel.assets.find(a => a.name === "DIUTransportSchedule.apk");
-            if (!apk) core.setFailed("DIUTransportSchedule.apk not found!");
+            if (!apk) core.setFailed("DIUTransportSchedule.apk not found in release assets!");
             core.setOutput("url", apk.browser_download_url);
 
       - name: Download APK
         run: |
           mkdir -p site
-          curl -L "${{ steps.apk.outputs.url }}" -o site/latest.apk
+          curl -L "${{ steps.find_apk.outputs.url }}" -o site/latest.apk
 
-      - name: Upload to Pages
+      - name: Create index page (optional)
+        run: |
+          cat > site/index.html << 'EOF'
+          <!doctype html>
+          <html>
+          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
+          <body style="font-family:system-ui;padding:24px;">
+            <h2>DIU Transport Schedule</h2>
+            <p><a href="./latest.apk">Download latest APK</a></p>
+          </body>
+          </html>
+          EOF
+
+      - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: site
 
-      - name: Deploy
+      - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
