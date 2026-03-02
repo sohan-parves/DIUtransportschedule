@@ -1,17 +1,17 @@
 {
-  "latestVersionCode": 14,
-  "latestVersionName": "1.1.4",
-  "minSupportedVersionCode": 1,
+  "latestVersionCode": 15,
+  "latestVersionName": "1.1.5",
+  "minSupportedVersionCode": 5,
   "fullApk": {
-    "url": "https://github.com/sohan-parves/DIUtransportschedule/releases/download/v1.1.4/DIUTransportSchedule.apk",
+    "url": "https://github.com/sohan-parves/DIUtransportschedule/releases/download/v1.1.5/DIUTransportSchedule.apk",
     "sha256": "e1056f64772ff6bd0ba9605cf7eb0239bee7a71fab8309c88a4e88d823c65034",
     "size": 62639632
   },
   "patches": [
     {
-      "fromVersionCode": 13,
-      "toVersionCode": 14,
-      "url": "https://github.com/sohan-parves/DIUtransportschedule/releases/download/v1.1.4/patch-13-14.hdp",
+      "fromVersionCode": 14,
+      "toVersionCode": 15,
+      "url": "https://github.com/sohan-parves/DIUtransportschedule/releases/download/v1.1.5/patch-14-15.hdp",
       "sha256": "7f92c4ee2dab7805d0326165baea1bb4b9125a2e803084aa418f0016e4c9c288",
       "size": 1272140
     }
