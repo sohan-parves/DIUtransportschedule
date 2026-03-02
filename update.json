@@ -1,13 +1,11 @@
 {
-  "latestVersionCode": 10,
-  "latestVersionName": "1.1.0",
+  "latestVersionCode": 11,
+  "latestVersionName": "1.1.1",
   "minSupportedVersionCode": 1,
-
   "fullApk": {
-    "url": "https://github.com/sohan-parves/DIUtransportschedule/releases/download/v1.1.0/DIUtransportschedule.apk",
-    "sha256": "PUT_SHA256_HERE",
-    "size": PUT_SIZE_HERE
+    "url": "https://github.com/sohan-parves/DIUtransportschedule/releases/download/v1.1.0/DIUTransportSchedule.apk",
+    "sha256": "d1a2d7ae3422d10b2344ed9c0df6f9c2b4b86c0f702e95bbd22fd68e16dec19e",
+    "size": 62623244
   },
-
   "patches": []
 }
