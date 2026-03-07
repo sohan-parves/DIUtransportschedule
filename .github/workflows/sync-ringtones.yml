@@ -1,0 +1,61 @@
+name: Sync ringtones json
+
+on:
+  push:
+    paths:
+      - 'assets/ringtones/**'
+  workflow_dispatch:
+
+jobs:
+  build-json:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate ringtones.json
+        run: |
+          python3 << 'PY'
+          import os, json
+
+          folder = "assets/ringtones"
+          output = os.path.join(folder, "ringtones.json")
+          base = "https://cdn.jsdelivr.net/gh/sohan-parves/DIUtransportschedule@master/assets/ringtones/"
+
+          allowed = {".mp3", ".m4a", ".ogg", ".wav"}
+          items = []
+
+          for name in sorted(os.listdir(folder)):
+              full = os.path.join(folder, name)
+              if not os.path.isfile(full):
+                  continue
+              if name in {"ringtones.json"}:
+                  continue
+
+              ext = os.path.splitext(name)[1].lower()
+              if ext not in allowed:
+                  continue
+
+              display = os.path.splitext(name)[0].replace("_", " ").replace("-", " ").strip().title()
+              items.append({
+                  "name": display,
+                  "url": base + name.replace(" ", "%20")
+              })
+
+          with open(output, "w", encoding="utf-8") as f:
+              json.dump(items, f, indent=2, ensure_ascii=False)
+
+          print("Generated", output, "with", len(items), "items")
+          PY
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/ringtones/ringtones.json
+          git diff --cached --quiet || git commit -m "Auto update ringtones.json"
+          git push
