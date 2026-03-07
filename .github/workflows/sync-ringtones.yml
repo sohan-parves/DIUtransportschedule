@@ -14,45 +14,55 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Generate ringtones.json
         run: |
           python3 << 'PY'
-          import os, json
+          import os
+          import json
+          from urllib.parse import quote
 
           folder = "assets/ringtones"
           output = os.path.join(folder, "ringtones.json")
-          base = "https://cdn.jsdelivr.net/gh/sohan-parves/DIUtransportschedule@master/assets/ringtones/"
+          base_url = "https://cdn.jsdelivr.net/gh/sohan-parves/DIUtransportschedule@master/assets/ringtones/"
 
           allowed = {".mp3", ".m4a", ".ogg", ".wav"}
+          skip_files = {"ringtones.json"}
+
           items = []
 
-          for name in sorted(os.listdir(folder)):
+          if not os.path.isdir(folder):
+              raise SystemExit(f"Folder not found: {folder}")
+
+          for name in sorted(os.listdir(folder), key=lambda s: s.lower()):
               full = os.path.join(folder, name)
+
               if not os.path.isfile(full):
                   continue
-              if name in {"ringtones.json"}:
+              if name in skip_files:
                   continue
 
               ext = os.path.splitext(name)[1].lower()
               if ext not in allowed:
                   continue
 
-              display = os.path.splitext(name)[0].replace("_", " ").replace("-", " ").strip().title()
+              display = os.path.splitext(name)[0]
+              display = display.replace("_", " ").replace("-", " ").strip().title()
+
               items.append({
                   "name": display,
-                  "url": base + name.replace(" ", "%20")
+                  "url": base_url + quote(name)
               })
 
           with open(output, "w", encoding="utf-8") as f:
               json.dump(items, f, indent=2, ensure_ascii=False)
 
-          print("Generated", output, "with", len(items), "items")
+          print(f"Generated {output} with {len(items)} items")
           PY
 
-      - name: Commit changes
+      - name: Commit updated ringtones.json
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
